@@ -1,519 +1,1265 @@
-const canvas = document.getElementById("gameCanvas");
-const ctx = canvas.getContext("2d");
+/* =========================================
+   ELEMENTS
+========================================= */
 
-const scoreText = document.getElementById("score");
-const bestText = document.getElementById("bestScore");
+const canvas =
+    document.getElementById("gameCanvas");
 
-const startScreen = document.getElementById("startScreen");
-const gameOverBox = document.getElementById("gameOver");
+const ctx =
+    canvas.getContext("2d");
 
-const startBtn = document.getElementById("startBtn");
-const restartBtn = document.getElementById("restartBtn");
 
-const jumpBtn = document.getElementById("jumpBtn");
-const pauseBtn = document.getElementById("pauseBtn");
+const scoreText =
+    document.getElementById("score");
 
-const finalScore = document.getElementById("finalScore");
+const bestText =
+    document.getElementById("bestScore");
 
+
+const startScreen =
+    document.getElementById("startScreen");
+
+const gameOverBox =
+    document.getElementById("gameOver");
+
+const pauseScreen =
+    document.getElementById("pauseScreen");
+
+
+const startBtn =
+    document.getElementById("startBtn");
+
+const restartBtn =
+    document.getElementById("restartBtn");
+
+const resumeBtn =
+    document.getElementById("resumeBtn");
+
+
+const jumpBtn =
+    document.getElementById("jumpBtn");
+
+const pauseBtn =
+    document.getElementById("pauseBtn");
+
+
+const finalScore =
+    document.getElementById("finalScore");
+
+const resultBest =
+    document.getElementById("resultBest");
+
+
+/* =========================================
+   GAME STATE
+========================================= */
 
 let gameRunning = false;
-let paused = false;
 
+let paused = false;
 
 let score = 0;
 
-let bestScore = localStorage.getItem("dinoBest") || 0;
+let bestScore =
+    Number(
+        localStorage.getItem("dinoBest")
+    ) || 0;
 
-bestText.innerHTML = bestScore;
+
+let animationId = null;
+
+let lastTime = 0;
+
+let obstacleTimer = 0;
+
+let cloudTimer = 0;
+
+let gameSpeed = 6;
 
 
-let dino = {
+/* =========================================
+   INITIAL BEST SCORE
+========================================= */
 
-    x:80,
+bestText.textContent =
+    bestScore;
 
-    y:220,
+resultBest.textContent =
+    bestScore;
 
-    width:45,
 
-    height:50,
+/* =========================================
+   WORLD
+========================================= */
 
-    gravity:0.8,
+const WORLD_WIDTH = 900;
 
-    jumpPower:-14,
+const WORLD_HEIGHT = 300;
 
-    velocity:0,
+const GROUND_Y = 270;
 
-    jumping:false
+
+/* =========================================
+   DINO
+========================================= */
+
+const dino = {
+
+    x: 80,
+
+    y: 220,
+
+    width: 42,
+
+    height: 48,
+
+    velocityY: 0,
+
+    gravity: 0.78,
+
+    jumpPower: -14,
+
+    jumping: false
 
 };
 
+
+/* =========================================
+   ARRAYS
+========================================= */
 
 let obstacles = [];
 
 let clouds = [];
 
-let speed = 6;
+
+/* =========================================
+   RESET GAME
+========================================= */
+
+function resetGame() {
+
+    score = 0;
+
+    gameSpeed = 6;
+
+    obstacleTimer = 0;
+
+    cloudTimer = 0;
+
+    obstacles = [];
+
+    clouds = [];
 
 
+    dino.x = 80;
 
-// Ground
+    dino.y = 220;
 
-let ground = {
+    dino.velocityY = 0;
 
-    y:270
-
-};
-
+    dino.jumping = false;
 
 
-function createCloud(){
+    scoreText.textContent = "0";
+
+
+    createCloud();
+
+    createCloud();
+
+}
+
+
+/* =========================================
+   CREATE CLOUD
+========================================= */
+
+function createCloud(
+    x = WORLD_WIDTH + 40
+) {
 
     clouds.push({
 
-        x:900,
+        x,
 
-        y:40 + Math.random()*80,
+        y:
+            35 +
+            Math.random() * 80,
 
-        width:70,
+        width:
+            70 +
+            Math.random() * 40,
 
-        height:25
+        speed:
+            0.5 +
+            Math.random() * 0.5
 
     });
 
 }
 
 
-function createObstacle(){
+/* =========================================
+   CREATE OBSTACLE
+========================================= */
+
+function createObstacle() {
+
+    const tall =
+        Math.random() > 0.72;
+
 
     obstacles.push({
 
-        x:900,
+        x: WORLD_WIDTH + 30,
 
-        y:220,
+        y:
+            tall
+                ? 202
+                : 220,
 
-        width:25,
+        width:
+            tall
+                ? 30
+                : 24,
 
-        height:50
+        height:
+            tall
+                ? 68
+                : 48
 
     });
 
 }
 
 
-function drawDino(){
+/* =========================================
+   DRAW SKY
+========================================= */
 
-    ctx.fillStyle="#7c3aed";
+function drawSky() {
 
-    ctx.shadowColor="#7c3aed";
+    const gradient =
+        ctx.createLinearGradient(
+            0,
+            0,
+            0,
+            WORLD_HEIGHT
+        );
 
-    ctx.shadowBlur=15;
 
+    gradient.addColorStop(
+        0,
+        "#7dd3fc"
+    );
 
-    ctx.fillRect(
+    gradient.addColorStop(
+        0.55,
+        "#bae6fd"
+    );
 
-        dino.x,
-
-        dino.y,
-
-        dino.width,
-
-        dino.height
-
+    gradient.addColorStop(
+        1,
+        "#e0e7ff"
     );
 
 
-    ctx.shadowBlur=0;
+    ctx.fillStyle =
+        gradient;
 
-
-    ctx.fillStyle="white";
 
     ctx.fillRect(
+        0,
+        0,
+        WORLD_WIDTH,
+        WORLD_HEIGHT
+    );
 
-        dino.x+30,
 
-        dino.y+10,
+    /* Sun */
 
-        8,
+    const sunGradient =
+        ctx.createRadialGradient(
+            740,
+            60,
+            5,
+            740,
+            60,
+            45
+        );
 
-        8
 
+    sunGradient.addColorStop(
+        0,
+        "rgba(255,255,255,0.95)"
+    );
+
+    sunGradient.addColorStop(
+        1,
+        "rgba(255,255,255,0)"
+    );
+
+
+    ctx.fillStyle =
+        sunGradient;
+
+
+    ctx.beginPath();
+
+    ctx.arc(
+        740,
+        60,
+        45,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+}
+
+
+/* =========================================
+   DRAW CLOUDS
+========================================= */
+
+function drawClouds() {
+
+    clouds.forEach(
+        cloud => {
+
+            ctx.fillStyle =
+                "rgba(255,255,255,0.68)";
+
+
+            ctx.beginPath();
+
+            ctx.arc(
+                cloud.x,
+                cloud.y,
+                18,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.arc(
+                cloud.x + 20,
+                cloud.y - 7,
+                24,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.arc(
+                cloud.x + 44,
+                cloud.y,
+                18,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.fill();
+
+        }
     );
 
 }
 
 
-function drawObstacles(){
+/* =========================================
+   DRAW GROUND
+========================================= */
 
-    ctx.fillStyle="#16a34a";
+function drawGround() {
+
+    ctx.fillStyle =
+        "#334155";
 
 
-    obstacles.forEach(ob=>{
+    ctx.fillRect(
+        0,
+        GROUND_Y,
+        WORLD_WIDTH,
+        4
+    );
+
+
+    ctx.fillStyle =
+        "#64748b";
+
+
+    for (
+        let x = 0;
+        x < WORLD_WIDTH;
+        x += 45
+    ) {
+
+        const offset =
+            (score * 0.35) % 45;
 
 
         ctx.fillRect(
-
-            ob.x,
-
-            ob.y,
-
-            ob.width,
-
-            ob.height
-
+            x - offset,
+            GROUND_Y + 10,
+            22,
+            2
         );
-
-
-    });
-
-}
-
-function drawClouds(){
-
-    ctx.fillStyle="rgba(255,255,255,0.7)";
-
-
-    clouds.forEach(cloud=>{
-
-
-        ctx.beginPath();
-
-
-        ctx.arc(
-
-            cloud.x,
-
-            cloud.y,
-
-            20,
-
-            0,
-
-            Math.PI*2
-
-        );
-
-
-        ctx.fill();
-
-
-    });
-
-}
-
-
-function moveObjects(){
-
-
-    obstacles.forEach(ob=>{
-
-        ob.x -= speed;
-
-    });
-
-
-
-    clouds.forEach(cloud=>{
-
-        cloud.x -= 1;
-
-    });
-
-
-
-    obstacles = obstacles.filter(
-
-        ob=>ob.x>-50
-
-    );
-
-
-    clouds = clouds.filter(
-
-        c=>c.x>-100
-
-    );
-
-}
-
-
-
-// Dino physics
-
-function updateDino(){
-
-
-    dino.velocity += dino.gravity;
-
-    dino.y += dino.velocity;
-
-
-
-    if(dino.y >=220){
-
-        dino.y=220;
-
-        dino.velocity=0;
-
-        dino.jumping=false;
 
     }
 
 }
 
 
-function jump(){
+/* =========================================
+   DRAW DINO
+========================================= */
+
+function drawDino() {
+
+    ctx.save();
 
 
-    if(!gameRunning)
+    /* Glow */
 
-        return;
+    ctx.shadowColor =
+        "rgba(124,58,237,0.55)";
 
-
-    if(!dino.jumping){
-
-        dino.velocity=dino.jumpPower;
-
-        dino.jumping=true;
-    } 
-}
-    
-function checkCollision(){
+    ctx.shadowBlur = 14;
 
 
-    obstacles.forEach(ob=>{
+    /* Body */
 
+    ctx.fillStyle =
+        "#7c3aed";
 
-        if(
-
-            dino.x < ob.x + ob.width &&
-
-            dino.x + dino.width > ob.x &&
-
-            dino.y < ob.y + ob.height &&
-
-            dino.y + dino.height > ob.y
-
-        ){
-
-            endGame();
-
-        }
-
-
-    });
-
-}
-
-
-
-function draw(){
-
-
-    ctx.clearRect(
-
-        0,
-
-        0,
-
-        canvas.width,
-
-        canvas.height
-
-    );
-
-
-
-    ctx.fillStyle="#334155";
 
     ctx.fillRect(
-
-        0,
-
-        ground.y,
-
-        canvas.width,
-
-        5
-
+        dino.x + 5,
+        dino.y + 10,
+        32,
+        32
     );
 
 
+    /* Head */
+
+    ctx.fillRect(
+        dino.x + 20,
+        dino.y,
+        25,
+        25
+    );
+
+
+    /* Tail */
+
+    ctx.fillRect(
+        dino.x,
+        dino.y + 22,
+        12,
+        7
+    );
+
+
+    ctx.shadowBlur = 0;
+
+
+    /* Eye */
+
+    ctx.fillStyle =
+        "#ffffff";
+
+
+    ctx.fillRect(
+        dino.x + 35,
+        dino.y + 7,
+        5,
+        5
+    );
+
+
+    /* Pupil */
+
+    ctx.fillStyle =
+        "#111827";
+
+
+    ctx.fillRect(
+        dino.x + 37,
+        dino.y + 8,
+        3,
+        3
+    );
+
+
+    /* Legs */
+
+    ctx.fillStyle =
+        "#6d28d9";
+
+
+    ctx.fillRect(
+        dino.x + 9,
+        dino.y + 40,
+        7,
+        9
+    );
+
+
+    ctx.fillRect(
+        dino.x + 28,
+        dino.y + 40,
+        7,
+        9
+    );
+
+
+    ctx.restore();
+
+}
+
+
+/* =========================================
+   DRAW OBSTACLES
+========================================= */
+
+function drawObstacles() {
+
+    obstacles.forEach(
+        obstacle => {
+
+            ctx.save();
+
+
+            ctx.shadowColor =
+                "rgba(16,185,129,0.35)";
+
+            ctx.shadowBlur = 10;
+
+
+            ctx.fillStyle =
+                "#059669";
+
+
+            /* Main trunk */
+
+            ctx.fillRect(
+                obstacle.x + 8,
+                obstacle.y,
+                10,
+                obstacle.height
+            );
+
+
+            /* Branches */
+
+            ctx.fillRect(
+                obstacle.x,
+                obstacle.y + 15,
+                9,
+                6
+            );
+
+
+            ctx.fillRect(
+                obstacle.x + 18,
+                obstacle.y + 26,
+                9,
+                6
+            );
+
+
+            ctx.fillStyle =
+                "#10b981";
+
+
+            ctx.fillRect(
+                obstacle.x + 5,
+                obstacle.y + 7,
+                6,
+                7
+            );
+
+
+            ctx.restore();
+
+        }
+    );
+
+}
+
+
+/* =========================================
+   DRAW GAME
+========================================= */
+
+function drawGame() {
+
+    ctx.clearRect(
+        0,
+        0,
+        WORLD_WIDTH,
+        WORLD_HEIGHT
+    );
+
+
+    drawSky();
 
     drawClouds();
 
-    drawDino();
+    drawGround();
 
     drawObstacles();
 
+    drawDino();
 
 }
 
 
-function gameLoop(){
+/* =========================================
+   UPDATE DINO
+========================================= */
+
+function updateDino() {
+
+    dino.velocityY +=
+        dino.gravity;
 
 
-    if(!gameRunning || paused)
+    dino.y +=
+        dino.velocityY;
+
+
+    if (
+        dino.y >= 220
+    ) {
+
+        dino.y = 220;
+
+        dino.velocityY = 0;
+
+        dino.jumping = false;
+
+    }
+
+}
+
+
+/* =========================================
+   JUMP
+========================================= */
+
+function jump() {
+
+    if (
+        !gameRunning ||
+        paused
+    ) {
 
         return;
 
+    }
+
+
+    if (
+        !dino.jumping
+    ) {
+
+        dino.velocityY =
+            dino.jumpPower;
+
+        dino.jumping = true;
+
+    }
+
+}
+
+
+/* =========================================
+   UPDATE OBJECTS
+========================================= */
+
+function updateObjects(delta) {
+
+    const movement =
+        gameSpeed * delta * 60;
+
+
+    obstacles.forEach(
+        obstacle => {
+
+            obstacle.x -=
+                movement;
+
+        }
+    );
+
+
+    clouds.forEach(
+        cloud => {
+
+            cloud.x -=
+                cloud.speed *
+                delta *
+                60;
+
+        }
+    );
+
+
+    obstacles =
+        obstacles.filter(
+            obstacle =>
+                obstacle.x >
+                -60
+        );
+
+
+    clouds =
+        clouds.filter(
+            cloud =>
+                cloud.x >
+                -120
+        );
+
+}
+
+
+/* =========================================
+   COLLISION
+========================================= */
+
+function checkCollision() {
+
+    /* Smaller hitbox makes gameplay fairer */
+
+    const dinoBox = {
+
+        x:
+            dino.x + 7,
+
+        y:
+            dino.y + 5,
+
+        width:
+            dino.width - 10,
+
+        height:
+            dino.height - 7
+
+    };
+
+
+    for (
+        const obstacle of obstacles
+    ) {
+
+        const obstacleBox = {
+
+            x:
+                obstacle.x + 3,
+
+            y:
+                obstacle.y + 3,
+
+            width:
+                obstacle.width - 6,
+
+            height:
+                obstacle.height - 3
+
+        };
+
+
+        const hit =
+
+            dinoBox.x <
+                obstacleBox.x +
+                obstacleBox.width &&
+
+            dinoBox.x +
+                dinoBox.width >
+                obstacleBox.x &&
+
+            dinoBox.y <
+                obstacleBox.y +
+                obstacleBox.height &&
+
+            dinoBox.y +
+                dinoBox.height >
+                obstacleBox.y;
+
+
+        if (hit) {
+
+            return true;
+
+        }
+
+    }
+
+
+    return false;
+
+}
+
+
+/* =========================================
+   UPDATE DIFFICULTY
+========================================= */
+
+function updateDifficulty() {
+
+    const displayedScore =
+        Math.floor(score / 10);
+
+
+    gameSpeed =
+        Math.min(
+            11,
+            6 +
+            displayedScore / 120
+        );
+
+}
+
+
+/* =========================================
+   GAME LOOP
+========================================= */
+
+function gameLoop(timestamp) {
+
+    if (
+        !gameRunning ||
+        paused
+    ) {
+
+        return;
+
+    }
+
+
+    const delta =
+        Math.min(
+            (timestamp - lastTime) / 1000,
+            0.035
+        );
+
+
+    lastTime =
+        timestamp;
+
+
     updateDino();
 
-
-    moveObjects();
-
-
-    checkCollision();
+    updateObjects(delta);
 
 
-    score++;
+    obstacleTimer +=
+        delta * 1000;
+
+    cloudTimer +=
+        delta * 1000;
 
 
-    scoreText.innerHTML=Math.floor(score/10);
+    /* Dynamic obstacle interval */
+
+    const obstacleInterval =
+        Math.max(
+            650,
+            1350 -
+            Math.floor(score / 10) * 2
+        );
 
 
-
-    if(score % 500 ===0){
+    if (
+        obstacleTimer >=
+        obstacleInterval
+    ) {
 
         createObstacle();
 
+        obstacleTimer = 0;
+
     }
 
 
-    if(score % 300 ===0){
+    if (
+        cloudTimer >= 1800
+    ) {
 
         createCloud();
 
+        cloudTimer = 0;
+
     }
 
 
+    if (
+        checkCollision()
+    ) {
 
-    draw();
+        endGame();
 
+        return;
 
-    requestAnimationFrame(gameLoop);
-
-}
-
-
-function startGame(){
-
-
-    gameRunning=true;
-
-    paused=false;
+    }
 
 
-    score=0;
-
-    obstacles=[];
-
-    clouds=[];
+    score +=
+        delta * 60;
 
 
-    dino.y=220;
+    const displayedScore =
+        Math.floor(score / 10);
 
 
-    startScreen.classList.add("hidden");
+    scoreText.textContent =
+        displayedScore;
 
 
-    gameOverBox.classList.add("hidden");
+    updateDifficulty();
+
+    drawGame();
 
 
-    gameLoop();
-
-}
-
-function endGame(){
-
-
-    gameRunning=false;
-
-
-    let final=Math.floor(score/10);
-
-
-    finalScore.innerHTML=final;
-
-
-
-    if(final>bestScore){
-
-        bestScore=final;
-
-        localStorage.setItem(
-
-            "dinoBest",
-
-            bestScore
-
+    animationId =
+        requestAnimationFrame(
+            gameLoop
         );
 
-        bestText.innerHTML=bestScore;
+}
+
+
+/* =========================================
+   START GAME
+========================================= */
+
+function startGame() {
+
+    if (
+        animationId
+    ) {
+
+        cancelAnimationFrame(
+            animationId
+        );
 
     }
 
 
+    resetGame();
 
-    gameOverBox.classList.remove("hidden");
+
+    gameRunning = true;
+
+    paused = false;
+
+
+    startScreen.classList.add(
+        "hidden"
+    );
+
+    gameOverBox.classList.add(
+        "hidden"
+    );
+
+    pauseScreen.classList.add(
+        "hidden"
+    );
+
+
+    pauseBtn.innerHTML =
+        '<span class="action-icon">⏸</span><span>Pause</span>';
+
+
+    drawGame();
+
+
+    lastTime =
+        performance.now();
+
+
+    animationId =
+        requestAnimationFrame(
+            gameLoop
+        );
 
 }
 
 
-function pauseGame(){
+/* =========================================
+   END GAME
+========================================= */
+
+function endGame() {
+
+    gameRunning = false;
+
+    paused = false;
 
 
-    if(gameRunning){
+    if (
+        animationId
+    ) {
 
-        paused=!paused;
+        cancelAnimationFrame(
+            animationId
+        );
+
+    }
 
 
-        if(paused){
+    const final =
+        Math.floor(score / 10);
 
-            pauseBtn.innerHTML="▶ Resume";
 
-        }
+    finalScore.textContent =
+        final;
 
-        else{
 
-            pauseBtn.innerHTML="⏸ Pause";
+    if (
+        final > bestScore
+    ) {
 
-            gameLoop();
+        bestScore = final;
 
-        }
+
+        localStorage.setItem(
+            "dinoBest",
+            String(bestScore)
+        );
+
+    }
+
+
+    bestText.textContent =
+        bestScore;
+
+    resultBest.textContent =
+        bestScore;
+
+
+    gameOverBox.classList.remove(
+        "hidden"
+    );
+
+
+    pauseScreen.classList.add(
+        "hidden"
+    );
+
+}
+
+
+/* =========================================
+   PAUSE
+========================================= */
+
+function pauseGame() {
+
+    if (
+        !gameRunning
+    ) {
+
+        return;
+
+    }
+
+
+    paused = true;
+
+
+    pauseScreen.classList.remove(
+        "hidden"
+    );
+
+
+    pauseBtn.innerHTML =
+        '<span class="action-icon">▶</span><span>Resume</span>';
+
+}
+
+
+/* =========================================
+   RESUME
+========================================= */
+
+function resumeGame() {
+
+    if (
+        !gameRunning
+    ) {
+
+        return;
+
+    }
+
+
+    paused = false;
+
+
+    pauseScreen.classList.add(
+        "hidden"
+    );
+
+
+    pauseBtn.innerHTML =
+        '<span class="action-icon">⏸</span><span>Pause</span>';
+
+
+    lastTime =
+        performance.now();
+
+
+    animationId =
+        requestAnimationFrame(
+            gameLoop
+        );
+
+}
+
+
+/* =========================================
+   PAUSE / RESUME BUTTON
+========================================= */
+
+function togglePause() {
+
+    if (!gameRunning) {
+
+        return;
+
+    }
+
+
+    if (paused) {
+
+        resumeGame();
+
+    }
+
+    else {
+
+        pauseGame();
 
     }
 
 }
+
+
+/* =========================================
+   KEYBOARD
+========================================= */
 
 document.addEventListener(
+    "keydown",
+    event => {
 
-"keydown",
+        if (
+            event.code === "Space" ||
+            event.code === "ArrowUp"
+        ) {
 
-(e)=>{
+            event.preventDefault();
+
+            jump();
+
+        }
 
 
-    if(e.code==="Space" || e.code==="ArrowUp"){
+        if (
+            event.code === "KeyP"
+        ) {
 
-        jump();
+            event.preventDefault();
+
+            togglePause();
+
+        }
 
     }
+);
 
 
-});
+/* =========================================
+   BUTTON EVENTS
+========================================= */
+
+startBtn.addEventListener(
+    "click",
+    startGame
+);
 
 
-startBtn.onclick=startGame;
+restartBtn.addEventListener(
+    "click",
+    startGame
+);
 
 
-restartBtn.onclick=startGame;
+resumeBtn.addEventListener(
+    "click",
+    resumeGame
+);
 
 
-jumpBtn.onclick=jump;
+jumpBtn.addEventListener(
+    "click",
+    jump
+);
 
 
-pauseBtn.onclick=pauseGame;
+pauseBtn.addEventListener(
+    "click",
+    togglePause
+);
 
 
-draw();
+/* =========================================
+   MOBILE TOUCH
+========================================= */
+
+canvas.addEventListener(
+    "pointerdown",
+    event => {
+
+        if (
+            event.pointerType === "touch"
+        ) {
+
+            event.preventDefault();
+
+            jump();
+
+        }
+
+    }
+);
+
+
+/* =========================================
+   PREVENT DOUBLE TAP ZOOM
+========================================= */
+
+canvas.addEventListener(
+    "dblclick",
+    event => {
+
+        event.preventDefault();
+
+    }
+);
+
+
+/* =========================================
+   INITIAL SCREEN
+========================================= */
+
+drawGame();
+
+createCloud();
 
 createCloud();
