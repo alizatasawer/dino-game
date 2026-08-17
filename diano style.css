@@ -1240,3 +1240,579 @@ button:focus-visible {
         transition-duration: 0.01ms !important;
     }
 }
+/* =========================================================
+   📱 FINAL MOBILE FIX — DINO RUSH
+   Senior Responsive UI Override
+========================================================= */
+
+html,
+body {
+    width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
+}
+
+body {
+    padding: 10px;
+}
+
+/* Main wrapper */
+.game-shell {
+    width: 100%;
+    max-width: 1080px;
+    margin: 0 auto;
+}
+
+/* Main card */
+.game-card {
+    width: 100%;
+    padding: 14px;
+    border-radius: 22px;
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.game-header {
+    width: 100%;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.brand {
+    width: 100%;
+    justify-content: center;
+}
+
+.brand-mark {
+    width: 46px;
+    height: 46px;
+    min-width: 46px;
+    border-radius: 14px;
+    font-size: 22px;
+}
+
+.brand-copy h1 {
+    font-size: 22px;
+    line-height: 1.1;
+}
+
+.brand-copy p {
+    margin-top: 4px;
+    font-size: 7px;
+    letter-spacing: 1.7px;
+}
+
+/* =========================================================
+   SCORE
+========================================================= */
+
+.stats {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 9px;
+}
+
+.stat {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    padding: 8px 10px;
+    border-radius: 12px;
+}
+
+.stat span {
+    font-size: 7px;
+    letter-spacing: 1.4px;
+}
+
+.stat strong {
+    margin-top: 3px;
+    font-size: 17px;
+}
+
+/* =========================================================
+   GAME FRAME
+========================================================= */
+
+.game-frame {
+    width: 100%;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+/*
+   Keep original game ratio.
+   This prevents the actual canvas/game physics
+   from becoming distorted.
+*/
+canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 1;
+    border-width: 2px;
+    border-radius: 16px;
+}
+
+/* =========================================================
+   OVERLAY — GENERAL
+========================================================= */
+
+.game-overlay {
+    inset: 2px;
+    padding: 7px;
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.overlay-content {
+    width: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    overflow: hidden;
+    justify-content: center;
+}
+
+/* =========================================================
+   OVERLAY ICON
+========================================================= */
+
+.hero-icon {
+    width: 38px;
+    height: 38px;
+    min-height: 38px;
+    margin-bottom: 4px;
+    border-radius: 11px;
+    font-size: 18px;
+}
+
+/* =========================================================
+   OVERLAY TEXT
+========================================================= */
+
+.eyebrow {
+    margin-bottom: 3px;
+    font-size: 6px;
+    letter-spacing: 1.4px;
+}
+
+.overlay-content h2 {
+    margin-bottom: 3px;
+    font-size: 18px;
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+}
+
+.overlay-content p {
+    max-width: 300px;
+    margin-bottom: 5px;
+    font-size: 8px;
+    line-height: 1.25;
+}
+
+/* =========================================================
+   KEYBOARD HINT
+========================================================= */
+
+.control-hint {
+    gap: 4px;
+    margin-bottom: 5px;
+}
+
+.control-hint span {
+    padding: 3px 6px;
+    border-radius: 5px;
+    font-size: 5px;
+}
+
+/* =========================================================
+   START / RESTART BUTTON
+========================================================= */
+
+.primary-btn {
+    min-width: 110px;
+    padding: 7px 12px;
+    border-radius: 9px;
+    font-size: 8px;
+}
+
+/* =========================================================
+   GAME OVER — IMPORTANT FIX
+========================================================= */
+
+#gameOver .overlay-content {
+    transform: scale(0.88);
+    transform-origin: center;
+}
+
+/* Final score */
+.final-score {
+    margin-bottom: 4px;
+    font-size: 28px;
+    line-height: 1;
+}
+
+/* Best score result */
+.result-row {
+    margin-bottom: 5px;
+    padding: 5px 12px;
+    border-radius: 8px;
+}
+
+.result-row span {
+    margin-right: 5px;
+    font-size: 6px;
+    letter-spacing: 0.7px;
+}
+
+.result-row strong {
+    font-size: 9px;
+}
+
+/* =========================================================
+   GAME BUTTONS
+========================================================= */
+
+.game-controls {
+    width: 100%;
+    grid-template-columns: 1fr 1fr;
+    gap: 9px;
+    margin-top: 10px;
+}
+
+.action-btn {
+    width: 100%;
+    min-height: 45px;
+    border-radius: 11px;
+    font-size: 10px;
+}
+
+.action-icon {
+    font-size: 15px;
+}
+
+/* =========================================================
+   INFO CARDS
+========================================================= */
+
+.info-grid {
+    width: 100%;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 7px;
+    margin-top: 9px;
+}
+
+.info-card {
+    min-width: 0;
+    justify-content: center;
+    padding: 7px 4px;
+    border-radius: 10px;
+}
+
+.info-icon {
+    width: 27px;
+    height: 27px;
+    min-width: 27px;
+    border-radius: 8px;
+    font-size: 11px;
+}
+
+.info-card strong {
+    font-size: 7px;
+    white-space: nowrap;
+}
+
+.info-card span {
+    display: none;
+}
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.game-footer {
+    margin-top: 8px;
+    gap: 5px;
+    font-size: 6px;
+    text-align: center;
+}
+
+/* =========================================================
+   📱 VERY SMALL PHONES
+========================================================= */
+
+@media (max-width: 390px) {
+
+    body {
+        padding: 6px;
+    }
+
+    .game-card {
+        padding: 10px;
+        border-radius: 18px;
+    }
+
+    .game-header {
+        gap: 9px;
+        margin-bottom: 10px;
+    }
+
+    .brand-mark {
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+        font-size: 19px;
+        border-radius: 12px;
+    }
+
+    .brand-copy h1 {
+        font-size: 19px;
+    }
+
+    .brand-copy p {
+        font-size: 6px;
+        letter-spacing: 1.3px;
+    }
+
+    .stat {
+        padding: 6px 8px;
+    }
+
+    .stat span {
+        font-size: 6px;
+    }
+
+    .stat strong {
+        font-size: 15px;
+    }
+
+    .game-frame,
+    canvas {
+        border-radius: 13px;
+    }
+
+    .game-overlay {
+        inset: 2px;
+        padding: 5px;
+    }
+
+    .hero-icon {
+        width: 32px;
+        height: 32px;
+        min-height: 32px;
+        font-size: 15px;
+        border-radius: 9px;
+        margin-bottom: 3px;
+    }
+
+    .overlay-content h2 {
+        font-size: 16px;
+    }
+
+    .overlay-content p {
+        font-size: 7px;
+        max-width: 250px;
+        margin-bottom: 4px;
+    }
+
+    .control-hint {
+        margin-bottom: 4px;
+    }
+
+    .control-hint span {
+        padding: 2px 5px;
+        font-size: 5px;
+    }
+
+    .primary-btn {
+        min-width: 95px;
+        padding: 6px 10px;
+        font-size: 8px;
+    }
+
+    #gameOver .overlay-content {
+        transform: scale(0.82);
+    }
+
+    .final-score {
+        font-size: 25px;
+    }
+
+    .result-row {
+        padding: 4px 9px;
+        margin-bottom: 4px;
+    }
+
+    .result-row span {
+        font-size: 5px;
+    }
+
+    .result-row strong {
+        font-size: 8px;
+    }
+
+    .game-controls {
+        gap: 7px;
+        margin-top: 8px;
+    }
+
+    .action-btn {
+        min-height: 42px;
+        border-radius: 10px;
+        font-size: 9px;
+    }
+
+    .action-icon {
+        font-size: 14px;
+    }
+
+    .info-grid {
+        gap: 5px;
+        margin-top: 7px;
+    }
+
+    .info-card {
+        padding: 5px 2px;
+    }
+
+    .info-icon {
+        width: 24px;
+        height: 24px;
+        min-width: 24px;
+        font-size: 10px;
+    }
+
+    .info-card strong {
+        font-size: 6px;
+    }
+
+    .game-footer {
+        font-size: 5px;
+        margin-top: 7px;
+    }
+}
+
+/* =========================================================
+   📱 EXTRA SMALL PHONES
+========================================================= */
+
+@media (max-width: 340px) {
+
+    body {
+        padding: 4px;
+    }
+
+    .game-card {
+        padding: 8px;
+    }
+
+    .brand-mark {
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+        font-size: 17px;
+    }
+
+    .brand-copy h1 {
+        font-size: 17px;
+    }
+
+    .brand-copy p {
+        font-size: 5px;
+    }
+
+    .stat {
+        padding: 5px;
+    }
+
+    .stat strong {
+        font-size: 14px;
+    }
+
+    .game-controls {
+        gap: 5px;
+    }
+
+    .action-btn {
+        min-height: 39px;
+        font-size: 8px;
+    }
+
+    .info-card strong {
+        font-size: 5px;
+    }
+
+    #gameOver .overlay-content {
+        transform: scale(0.76);
+    }
+}
+
+/* =========================================================
+   📱 LANDSCAPE PHONE
+========================================================= */
+
+@media (max-height: 500px) and (orientation: landscape) {
+
+    body {
+        align-items: flex-start;
+        padding: 6px;
+    }
+
+    .game-card {
+        padding: 9px;
+    }
+
+    .game-header {
+        flex-direction: row;
+        margin-bottom: 7px;
+    }
+
+    .brand {
+        justify-content: flex-start;
+    }
+
+    .stats {
+        width: auto;
+        display: flex;
+    }
+
+    .stat {
+        min-width: 75px;
+    }
+
+    .game-controls {
+        margin-top: 6px;
+    }
+
+    .info-grid,
+    .game-footer {
+        display: none;
+    }
+}
+
+/* =========================================================
+   TOUCH DEVICES
+========================================================= */
+
+@media (hover: none) and (pointer: coarse) {
+
+    button,
+    canvas {
+        -webkit-user-select: none;
+        user-select: none;
+        -webkit-touch-callout: none;
+    }
+
+    .primary-btn,
+    .action-btn {
+        min-height: 44px;
+    }
+
+    .primary-btn:active,
+    .action-btn:active {
+        transform: scale(0.96);
+    }
+}
