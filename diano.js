@@ -8,13 +8,11 @@ const canvas =
 const ctx =
     canvas.getContext("2d");
 
-
 const scoreText =
     document.getElementById("score");
 
 const bestText =
     document.getElementById("bestScore");
-
 
 const startScreen =
     document.getElementById("startScreen");
@@ -25,7 +23,6 @@ const gameOverBox =
 const pauseScreen =
     document.getElementById("pauseScreen");
 
-
 const startBtn =
     document.getElementById("startBtn");
 
@@ -35,13 +32,11 @@ const restartBtn =
 const resumeBtn =
     document.getElementById("resumeBtn");
 
-
 const jumpBtn =
     document.getElementById("jumpBtn");
 
 const pauseBtn =
     document.getElementById("pauseBtn");
-
 
 const finalScore =
     document.getElementById("finalScore");
@@ -65,7 +60,6 @@ let bestScore =
         localStorage.getItem("dinoBest")
     ) || 0;
 
-
 let animationId = null;
 
 let lastTime = 0;
@@ -75,17 +69,6 @@ let obstacleTimer = 0;
 let cloudTimer = 0;
 
 let gameSpeed = 6;
-
-
-/* =========================================
-   INITIAL BEST SCORE
-========================================= */
-
-bestText.textContent =
-    bestScore;
-
-resultBest.textContent =
-    bestScore;
 
 
 /* =========================================
@@ -120,12 +103,11 @@ const dino = {
     jumpPower: -14,
 
     jumping: false
-
 };
 
 
 /* =========================================
-   ARRAYS
+   OBJECTS
 ========================================= */
 
 let obstacles = [];
@@ -134,7 +116,79 @@ let clouds = [];
 
 
 /* =========================================
-   RESET GAME
+   BEST SCORE
+========================================= */
+
+bestText.textContent =
+    bestScore;
+
+resultBest.textContent =
+    bestScore;
+
+
+/* =========================================
+   CLOUD
+========================================= */
+
+function createCloud(
+    x = WORLD_WIDTH + 40
+) {
+
+    clouds.push({
+
+        x: x,
+
+        y:
+            35 +
+            Math.random() * 80,
+
+        width:
+            70 +
+            Math.random() * 40,
+
+        speed:
+            0.5 +
+            Math.random() * 0.5
+
+    });
+}
+
+
+/* =========================================
+   OBSTACLE
+========================================= */
+
+function createObstacle() {
+
+    const tall =
+        Math.random() > 0.72;
+
+
+    obstacles.push({
+
+        x:
+            WORLD_WIDTH + 30,
+
+        y:
+            tall
+                ? 202
+                : 220,
+
+        width:
+            tall
+                ? 30
+                : 24,
+
+        height:
+            tall
+                ? 68
+                : 48
+    });
+}
+
+
+/* =========================================
+   RESET
 ========================================= */
 
 function resetGame() {
@@ -161,81 +215,18 @@ function resetGame() {
     dino.jumping = false;
 
 
-    scoreText.textContent = "0";
+    scoreText.textContent =
+        "0";
 
 
     createCloud();
 
     createCloud();
-
 }
 
 
 /* =========================================
-   CREATE CLOUD
-========================================= */
-
-function createCloud(
-    x = WORLD_WIDTH + 40
-) {
-
-    clouds.push({
-
-        x,
-
-        y:
-            35 +
-            Math.random() * 80,
-
-        width:
-            70 +
-            Math.random() * 40,
-
-        speed:
-            0.5 +
-            Math.random() * 0.5
-
-    });
-
-}
-
-
-/* =========================================
-   CREATE OBSTACLE
-========================================= */
-
-function createObstacle() {
-
-    const tall =
-        Math.random() > 0.72;
-
-
-    obstacles.push({
-
-        x: WORLD_WIDTH + 30,
-
-        y:
-            tall
-                ? 202
-                : 220,
-
-        width:
-            tall
-                ? 30
-                : 24,
-
-        height:
-            tall
-                ? 68
-                : 48
-
-    });
-
-}
-
-
-/* =========================================
-   DRAW SKY
+   SKY
 ========================================= */
 
 function drawSky() {
@@ -277,7 +268,7 @@ function drawSky() {
     );
 
 
-    /* Sun */
+    /* SUN */
 
     const sunGradient =
         ctx.createRadialGradient(
@@ -316,12 +307,11 @@ function drawSky() {
     );
 
     ctx.fill();
-
 }
 
 
 /* =========================================
-   DRAW CLOUDS
+   CLOUDS
 ========================================= */
 
 function drawClouds() {
@@ -335,6 +325,7 @@ function drawClouds() {
 
             ctx.beginPath();
 
+
             ctx.arc(
                 cloud.x,
                 cloud.y,
@@ -342,6 +333,7 @@ function drawClouds() {
                 0,
                 Math.PI * 2
             );
+
 
             ctx.arc(
                 cloud.x + 20,
@@ -351,6 +343,7 @@ function drawClouds() {
                 Math.PI * 2
             );
 
+
             ctx.arc(
                 cloud.x + 44,
                 cloud.y,
@@ -359,16 +352,16 @@ function drawClouds() {
                 Math.PI * 2
             );
 
+
             ctx.fill();
 
         }
     );
-
 }
 
 
 /* =========================================
-   DRAW GROUND
+   GROUND
 ========================================= */
 
 function drawGround() {
@@ -405,14 +398,12 @@ function drawGround() {
             22,
             2
         );
-
     }
-
 }
 
 
 /* =========================================
-   DRAW DINO
+   DINO
 ========================================= */
 
 function drawDino() {
@@ -420,15 +411,14 @@ function drawDino() {
     ctx.save();
 
 
-    /* Glow */
-
     ctx.shadowColor =
         "rgba(124,58,237,0.55)";
 
-    ctx.shadowBlur = 14;
+    ctx.shadowBlur =
+        14;
 
 
-    /* Body */
+    /* BODY */
 
     ctx.fillStyle =
         "#7c3aed";
@@ -442,7 +432,7 @@ function drawDino() {
     );
 
 
-    /* Head */
+    /* HEAD */
 
     ctx.fillRect(
         dino.x + 20,
@@ -452,7 +442,7 @@ function drawDino() {
     );
 
 
-    /* Tail */
+    /* TAIL */
 
     ctx.fillRect(
         dino.x,
@@ -462,10 +452,11 @@ function drawDino() {
     );
 
 
-    ctx.shadowBlur = 0;
+    ctx.shadowBlur =
+        0;
 
 
-    /* Eye */
+    /* EYE */
 
     ctx.fillStyle =
         "#ffffff";
@@ -479,7 +470,7 @@ function drawDino() {
     );
 
 
-    /* Pupil */
+    /* PUPIL */
 
     ctx.fillStyle =
         "#111827";
@@ -493,7 +484,7 @@ function drawDino() {
     );
 
 
-    /* Legs */
+    /* LEGS */
 
     ctx.fillStyle =
         "#6d28d9";
@@ -516,12 +507,11 @@ function drawDino() {
 
 
     ctx.restore();
-
 }
 
 
 /* =========================================
-   DRAW OBSTACLES
+   OBSTACLES
 ========================================= */
 
 function drawObstacles() {
@@ -535,14 +525,15 @@ function drawObstacles() {
             ctx.shadowColor =
                 "rgba(16,185,129,0.35)";
 
-            ctx.shadowBlur = 10;
+            ctx.shadowBlur =
+                10;
 
 
             ctx.fillStyle =
                 "#059669";
 
 
-            /* Main trunk */
+            /* TRUNK */
 
             ctx.fillRect(
                 obstacle.x + 8,
@@ -552,7 +543,7 @@ function drawObstacles() {
             );
 
 
-            /* Branches */
+            /* BRANCHES */
 
             ctx.fillRect(
                 obstacle.x,
@@ -586,12 +577,11 @@ function drawObstacles() {
 
         }
     );
-
 }
 
 
 /* =========================================
-   DRAW GAME
+   DRAW EVERYTHING
 ========================================= */
 
 function drawGame() {
@@ -613,12 +603,11 @@ function drawGame() {
     drawObstacles();
 
     drawDino();
-
 }
 
 
 /* =========================================
-   UPDATE DINO
+   DINO PHYSICS
 ========================================= */
 
 function updateDino() {
@@ -640,9 +629,7 @@ function updateDino() {
         dino.velocityY = 0;
 
         dino.jumping = false;
-
     }
-
 }
 
 
@@ -658,7 +645,6 @@ function jump() {
     ) {
 
         return;
-
     }
 
 
@@ -670,9 +656,7 @@ function jump() {
             dino.jumpPower;
 
         dino.jumping = true;
-
     }
-
 }
 
 
@@ -683,7 +667,9 @@ function jump() {
 function updateObjects(delta) {
 
     const movement =
-        gameSpeed * delta * 60;
+        gameSpeed *
+        delta *
+        60;
 
 
     obstacles.forEach(
@@ -691,7 +677,6 @@ function updateObjects(delta) {
 
             obstacle.x -=
                 movement;
-
         }
     );
 
@@ -703,7 +688,6 @@ function updateObjects(delta) {
                 cloud.speed *
                 delta *
                 60;
-
         }
     );
 
@@ -711,18 +695,15 @@ function updateObjects(delta) {
     obstacles =
         obstacles.filter(
             obstacle =>
-                obstacle.x >
-                -60
+                obstacle.x > -60
         );
 
 
     clouds =
         clouds.filter(
             cloud =>
-                cloud.x >
-                -120
+                cloud.x > -120
         );
-
 }
 
 
@@ -731,8 +712,6 @@ function updateObjects(delta) {
 ========================================= */
 
 function checkCollision() {
-
-    /* Smaller hitbox makes gameplay fairer */
 
     const dinoBox = {
 
@@ -747,7 +726,6 @@ function checkCollision() {
 
         height:
             dino.height - 7
-
     };
 
 
@@ -768,7 +746,6 @@ function checkCollision() {
 
             height:
                 obstacle.height - 3
-
         };
 
 
@@ -776,15 +753,21 @@ function checkCollision() {
 
             dinoBox.x <
                 obstacleBox.x +
-                obstacleBox.width &&
+                obstacleBox.width
+
+            &&
 
             dinoBox.x +
                 dinoBox.width >
-                obstacleBox.x &&
+                obstacleBox.x
+
+            &&
 
             dinoBox.y <
                 obstacleBox.y +
-                obstacleBox.height &&
+                obstacleBox.height
+
+            &&
 
             dinoBox.y +
                 dinoBox.height >
@@ -794,19 +777,16 @@ function checkCollision() {
         if (hit) {
 
             return true;
-
         }
-
     }
 
 
     return false;
-
 }
 
 
 /* =========================================
-   UPDATE DIFFICULTY
+   DIFFICULTY
 ========================================= */
 
 function updateDifficulty() {
@@ -821,7 +801,6 @@ function updateDifficulty() {
             6 +
             displayedScore / 120
         );
-
 }
 
 
@@ -837,7 +816,6 @@ function gameLoop(timestamp) {
     ) {
 
         return;
-
     }
 
 
@@ -860,11 +838,10 @@ function gameLoop(timestamp) {
     obstacleTimer +=
         delta * 1000;
 
+
     cloudTimer +=
         delta * 1000;
 
-
-    /* Dynamic obstacle interval */
 
     const obstacleInterval =
         Math.max(
@@ -882,7 +859,6 @@ function gameLoop(timestamp) {
         createObstacle();
 
         obstacleTimer = 0;
-
     }
 
 
@@ -893,7 +869,6 @@ function gameLoop(timestamp) {
         createCloud();
 
         cloudTimer = 0;
-
     }
 
 
@@ -904,7 +879,6 @@ function gameLoop(timestamp) {
         endGame();
 
         return;
-
     }
 
 
@@ -929,12 +903,11 @@ function gameLoop(timestamp) {
         requestAnimationFrame(
             gameLoop
         );
-
 }
 
 
 /* =========================================
-   START GAME
+   START
 ========================================= */
 
 function startGame() {
@@ -946,7 +919,6 @@ function startGame() {
         cancelAnimationFrame(
             animationId
         );
-
     }
 
 
@@ -962,9 +934,11 @@ function startGame() {
         "hidden"
     );
 
+
     gameOverBox.classList.add(
         "hidden"
     );
+
 
     pauseScreen.classList.add(
         "hidden"
@@ -986,12 +960,11 @@ function startGame() {
         requestAnimationFrame(
             gameLoop
         );
-
 }
 
 
 /* =========================================
-   END GAME
+   GAME OVER
 ========================================= */
 
 function endGame() {
@@ -1008,7 +981,6 @@ function endGame() {
         cancelAnimationFrame(
             animationId
         );
-
     }
 
 
@@ -1024,19 +996,20 @@ function endGame() {
         final > bestScore
     ) {
 
-        bestScore = final;
+        bestScore =
+            final;
 
 
         localStorage.setItem(
             "dinoBest",
             String(bestScore)
         );
-
     }
 
 
     bestText.textContent =
         bestScore;
+
 
     resultBest.textContent =
         bestScore;
@@ -1050,7 +1023,6 @@ function endGame() {
     pauseScreen.classList.add(
         "hidden"
     );
-
 }
 
 
@@ -1065,7 +1037,6 @@ function pauseGame() {
     ) {
 
         return;
-
     }
 
 
@@ -1079,7 +1050,6 @@ function pauseGame() {
 
     pauseBtn.innerHTML =
         '<span class="action-icon">▶</span><span>Resume</span>';
-
 }
 
 
@@ -1094,7 +1064,6 @@ function resumeGame() {
     ) {
 
         return;
-
     }
 
 
@@ -1118,20 +1087,20 @@ function resumeGame() {
         requestAnimationFrame(
             gameLoop
         );
-
 }
 
 
 /* =========================================
-   PAUSE / RESUME BUTTON
+   TOGGLE PAUSE
 ========================================= */
 
 function togglePause() {
 
-    if (!gameRunning) {
+    if (
+        !gameRunning
+    ) {
 
         return;
-
     }
 
 
@@ -1139,19 +1108,15 @@ function togglePause() {
 
         resumeGame();
 
-    }
-
-    else {
+    } else {
 
         pauseGame();
-
     }
-
 }
 
 
 /* =========================================
-   KEYBOARD
+   KEYBOARD CONTROLS
 ========================================= */
 
 document.addEventListener(
@@ -1166,7 +1131,6 @@ document.addEventListener(
             event.preventDefault();
 
             jump();
-
         }
 
 
@@ -1177,15 +1141,13 @@ document.addEventListener(
             event.preventDefault();
 
             togglePause();
-
         }
-
     }
 );
 
 
 /* =========================================
-   BUTTON EVENTS
+   BUTTONS
 ========================================= */
 
 startBtn.addEventListener(
@@ -1233,9 +1195,7 @@ canvas.addEventListener(
             event.preventDefault();
 
             jump();
-
         }
-
     }
 );
 
@@ -1249,17 +1209,16 @@ canvas.addEventListener(
     event => {
 
         event.preventDefault();
-
     }
 );
 
 
 /* =========================================
-   INITIAL SCREEN
+   INITIAL DRAW
 ========================================= */
 
+createCloud();
+
+createCloud();
+
 drawGame();
-
-createCloud();
-
-createCloud();
