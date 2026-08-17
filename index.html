@@ -1,461 +1,1242 @@
-<!DOCTYPE html>
-<html lang="en">
+/* =========================================
+   DINO RUSH — MODERN RESPONSIVE UI
+========================================= */
 
-<head>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-    <meta charset="UTF-8">
+:root {
+    --bg-1: #020617;
+    --bg-2: #0f172a;
+    --card: rgba(15, 23, 42, 0.78);
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-    >
+    --white: #f8fafc;
+    --muted: #94a3b8;
 
-    <meta
-        name="theme-color"
-        content="#070b17"
-    >
+    --purple: #8b5cf6;
+    --pink: #ec4899;
+    --cyan: #06b6d4;
+    --green: #10b981;
+    --yellow: #f59e0b;
+    --red: #ef4444;
 
-    <meta
-        name="description"
-        content="Dino Rush - a modern responsive browser game built with HTML, CSS and JavaScript."
-    >
+    --border: rgba(255, 255, 255, 0.09);
+}
 
-    <title>Dino Rush | Endless Runner</title>
 
-    <!-- Google Font -->
-    <link
-        rel="preconnect"
-        href="https://fonts.googleapis.com"
-    >
+/* =========================================
+   BODY
+========================================= */
 
-    <link
-        rel="preconnect"
-        href="https://fonts.gstatic.com"
-        crossorigin
-    >
+html {
+    scroll-behavior: smooth;
+}
 
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet"
-    >
+body {
+    min-height: 100vh;
+    min-height: 100svh;
 
-    <!-- CSS -->
-    <link
-        rel="stylesheet"
-        href="diano style.css"
-    >
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-</head>
+    padding: 24px;
 
+    font-family: "Inter", sans-serif;
 
-<body>
+    color: var(--white);
 
-    <main class="game-shell">
+    background:
+        radial-gradient(
+            circle at 10% 15%,
+            rgba(139, 92, 246, 0.22),
+            transparent 28%
+        ),
+        radial-gradient(
+            circle at 90% 85%,
+            rgba(236, 72, 153, 0.18),
+            transparent 28%
+        ),
+        radial-gradient(
+            circle at 50% 50%,
+            rgba(6, 182, 212, 0.05),
+            transparent 40%
+        ),
+        linear-gradient(
+            135deg,
+            var(--bg-1),
+            var(--bg-2)
+        );
 
-        <section class="game-card">
+    overflow-x: hidden;
 
+    -webkit-tap-highlight-color: transparent;
+}
 
-            <!-- =========================
-                 HEADER
-            ========================== -->
 
-            <header class="game-header">
+/* =========================================
+   MAIN CONTAINER
+========================================= */
 
-                <div class="brand">
+.game-shell {
+    width: 100%;
+    max-width: 1080px;
+}
 
-                    <div class="brand-mark">
-                        🦖
-                    </div>
 
-                    <div class="brand-copy">
+/* =========================================
+   MAIN CARD
+========================================= */
 
-                        <h1>
-                            Dino Rush
-                        </h1>
+.game-card {
+    width: 100%;
 
-                        <p>
-                            Endless Runner
-                        </p>
+    padding: clamp(18px, 4vw, 32px);
 
-                    </div>
+    border: 1px solid var(--border);
 
-                </div>
+    border-radius: 30px;
 
+    background: var(--card);
 
-                <div class="stats">
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
 
-                    <div class="stat">
+    box-shadow:
+        0 35px 100px rgba(0, 0, 0, 0.55),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04);
 
-                        <span>
-                            SCORE
-                        </span>
+    animation: cardIn 0.6s ease both;
+}
 
-                        <strong id="score">
-                            0
-                        </strong>
+@keyframes cardIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.98);
+    }
 
-                    </div>
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
 
 
-                    <div class="stat best-stat">
+/* =========================================
+   HEADER
+========================================= */
 
-                        <span>
-                            BEST
-                        </span>
+.game-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 
-                        <strong id="bestScore">
-                            0
-                        </strong>
+    gap: 20px;
 
-                    </div>
+    margin-bottom: 22px;
+}
 
-                </div>
 
-            </header>
+/* =========================================
+   BRAND
+========================================= */
 
+.brand {
+    display: flex;
+    align-items: center;
 
-            <!-- =========================
-                 GAME VIEW
-            ========================== -->
+    gap: 13px;
+}
 
-            <section
-                class="game-frame"
-                id="gameFrame"
-            >
+.brand-mark {
+    width: 54px;
+    height: 54px;
 
-                <canvas
-                    id="gameCanvas"
-                    width="900"
-                    height="300"
-                ></canvas>
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
+    flex-shrink: 0;
 
-                <!-- =========================
-                     START SCREEN
-                ========================== -->
+    border-radius: 17px;
 
-                <div
-                    id="startScreen"
-                    class="game-overlay"
-                >
+    font-size: 27px;
 
-                    <div class="overlay-content">
+    background:
+        linear-gradient(
+            135deg,
+            var(--purple),
+            var(--pink)
+        );
 
-                        <div class="hero-icon">
-                            🦖
-                        </div>
+    box-shadow:
+        0 12px 30px rgba(139, 92, 246, 0.3);
 
-                        <span class="eyebrow">
-                            READY TO RUN?
-                        </span>
+    animation: floatDino 3s ease-in-out infinite;
+}
 
-                        <h2>
-                            How Far Can You Go?
-                        </h2>
+@keyframes floatDino {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
 
-                        <p>
-                            Jump over obstacles, survive longer,
-                            and beat your highest score.
-                        </p>
+    50% {
+        transform: translateY(-4px);
+    }
+}
 
+.brand-copy h1 {
+    font-size: clamp(22px, 4vw, 31px);
 
-                        <div class="control-hint">
+    font-weight: 800;
 
-                            <span>
-                                SPACE
-                            </span>
+    letter-spacing: -1.2px;
+}
 
-                            <span>
-                                ↑
-                            </span>
+.brand-copy p {
+    margin-top: 4px;
 
-                            <span>
-                                TAP
-                            </span>
+    color: var(--muted);
 
-                        </div>
+    font-size: 9px;
 
+    font-weight: 700;
 
-                        <button
-                            id="startBtn"
-                            class="primary-btn"
-                        >
+    letter-spacing: 2px;
+}
 
-                            <span>
-                                ▶
-                            </span>
 
-                            Start Run
+/* =========================================
+   SCORE AREA
+========================================= */
 
-                        </button>
+.stats {
+    display: flex;
 
-                    </div>
+    gap: 10px;
+}
 
-                </div>
+.stat {
+    min-width: 100px;
 
+    padding: 10px 15px;
 
-                <!-- =========================
-                     GAME OVER
-                ========================== -->
+    text-align: center;
 
-                <div
-                    id="gameOver"
-                    class="game-overlay hidden"
-                >
+    border: 1px solid var(--border);
 
-                    <div class="overlay-content">
+    border-radius: 14px;
 
-                        <div class="hero-icon danger-icon">
-                            💥
-                        </div>
+    background:
+        rgba(255, 255, 255, 0.035);
 
-                        <span class="eyebrow danger-text">
-                            RUN COMPLETE
-                        </span>
+    transition: 0.25s ease;
+}
 
-                        <h2>
-                            Nice Try!
-                        </h2>
+.stat:hover {
+    transform: translateY(-2px);
 
-                        <p>
-                            You survived the run and scored
-                        </p>
+    border-color:
+        rgba(139, 92, 246, 0.35);
 
-                        <strong
-                            id="finalScore"
-                            class="final-score"
-                        >
-                            0
-                        </strong>
+    background:
+        rgba(139, 92, 246, 0.08);
+}
 
+.stat span {
+    display: block;
 
-                        <div class="result-row">
+    color: var(--muted);
 
-                            <div>
+    font-size: 8px;
 
-                                <span>
-                                    BEST SCORE
-                                </span>
+    font-weight: 800;
 
-                                <strong id="resultBest">
-                                    0
-                                </strong>
+    letter-spacing: 1.5px;
+}
 
-                            </div>
+.stat strong {
+    display: block;
 
-                        </div>
+    margin-top: 4px;
 
+    color: #38bdf8;
 
-                        <button
-                            id="restartBtn"
-                            class="primary-btn"
-                        >
+    font-size: 19px;
 
-                            <span>
-                                ↻
-                            </span>
+    font-variant-numeric: tabular-nums;
+}
 
-                            Run Again
+.best-stat strong {
+    color: #fbbf24;
+}
 
-                        </button>
 
-                    </div>
+/* =========================================
+   GAME AREA
+========================================= */
 
-                </div>
+.game-frame {
+    position: relative;
 
+    width: 100%;
 
-                <!-- =========================
-                     PAUSED SCREEN
-                ========================== -->
+    overflow: hidden;
 
-                <div
-                    id="pauseScreen"
-                    class="game-overlay hidden"
-                >
+    border-radius: 22px;
 
-                    <div class="overlay-content">
+    background: #bae6fd;
 
-                        <div class="hero-icon">
-                            ⏸
-                        </div>
+    box-shadow:
+        0 0 0 1px
+        rgba(139, 92, 246, 0.2),
 
-                        <span class="eyebrow">
-                            GAME PAUSED
-                        </span>
+        0 20px 50px
+        rgba(0, 0, 0, 0.3);
+}
 
-                        <h2>
-                            Take a Breath
-                        </h2>
 
-                        <p>
-                            Your run is safely paused.
-                        </p>
+/* =========================================
+   CANVAS
+========================================= */
 
+canvas {
+    display: block;
 
-                        <button
-                            id="resumeBtn"
-                            class="primary-btn"
-                        >
+    width: 100%;
+    height: auto;
 
-                            <span>
-                                ▶
-                            </span>
+    aspect-ratio: 3 / 1;
 
-                            Resume
+    border: 3px solid
+        rgba(139, 92, 246, 0.8);
 
-                        </button>
+    border-radius: 22px;
 
-                    </div>
+    touch-action: manipulation;
 
-                </div>
+    cursor: pointer;
+}
 
-            </section>
 
+/* =========================================
+   GAME OVERLAY
+========================================= */
 
-            <!-- =========================
-                 GAME CONTROLS
-            ========================== -->
+.game-overlay {
+    position: absolute;
 
-            <div class="game-controls">
+    inset: 3px;
 
-                <button
-                    id="jumpBtn"
-                    class="action-btn jump-btn"
-                >
+    display: flex;
 
-                    <span class="action-icon">
-                        ↑
-                    </span>
+    align-items: center;
+    justify-content: center;
 
-                    <span>
-                        Jump
-                    </span>
+    padding: 25px;
 
-                </button>
+    text-align: center;
 
+    background:
+        rgba(2, 6, 23, 0.68);
 
-                <button
-                    id="pauseBtn"
-                    class="action-btn pause-btn"
-                >
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
 
-                    <span class="action-icon">
-                        ⏸
-                    </span>
+    z-index: 5;
 
-                    <span>
-                        Pause
-                    </span>
+    animation: overlayIn 0.3s ease;
+}
 
-                </button>
+@keyframes overlayIn {
+    from {
+        opacity: 0;
+    }
 
-            </div>
+    to {
+        opacity: 1;
+    }
+}
 
+.hidden {
+    display: none !important;
+}
 
-            <!-- =========================
-                 INFO CARDS
-            ========================== -->
 
-            <div class="info-grid">
+/* =========================================
+   OVERLAY CONTENT
+========================================= */
 
-                <div class="info-card">
+.overlay-content {
+    width: 100%;
+    max-width: 450px;
 
-                    <div class="info-icon">
-                        ⌨️
-                    </div>
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 
-                    <div>
+.hero-icon {
+    width: 68px;
+    height: 68px;
 
-                        <strong>
-                            Keyboard
-                        </strong>
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-                        <span>
-                            SPACE / ↑ to jump
-                        </span>
+    margin-bottom: 13px;
 
-                    </div>
+    border: 1px solid
+        rgba(167, 139, 250, 0.25);
 
-                </div>
+    border-radius: 21px;
 
+    font-size: 31px;
 
-                <div class="info-card">
+    background:
+        rgba(139, 92, 246, 0.14);
 
-                    <div class="info-icon">
-                        📱
-                    </div>
+    box-shadow:
+        0 10px 30px
+        rgba(139, 92, 246, 0.15);
+}
 
-                    <div>
+.danger-icon {
+    background:
+        rgba(239, 68, 68, 0.13);
 
-                        <strong>
-                            Mobile
-                        </strong>
+    border-color:
+        rgba(239, 68, 68, 0.25);
+}
 
-                        <span>
-                            Tap screen to jump
-                        </span>
+.eyebrow {
+    margin-bottom: 8px;
 
-                    </div>
+    color: #a78bfa;
 
-                </div>
+    font-size: 9px;
 
+    font-weight: 800;
 
-                <div class="info-card">
+    letter-spacing: 2.2px;
+}
 
-                    <div class="info-icon">
-                        ⚡
-                    </div>
+.danger-text {
+    color: #f87171;
+}
 
-                    <div>
+.overlay-content h2 {
+    margin-bottom: 9px;
 
-                        <strong>
-                            Challenge
-                        </strong>
+    font-size:
+        clamp(24px, 5vw, 39px);
 
-                        <span>
-                            Speed increases
-                        </span>
+    font-weight: 800;
 
-                    </div>
+    letter-spacing: -1px;
+}
 
-                </div>
+.overlay-content p {
+    max-width: 400px;
 
-            </div>
+    margin-bottom: 16px;
 
+    color: #cbd5e1;
 
-            <!-- =========================
-                 FOOTER
-            ========================== -->
+    font-size:
+        clamp(10px, 2vw, 13px);
 
-            <footer class="game-footer">
+    line-height: 1.6;
+}
 
-                <span>
-                    DINO RUSH
-                </span>
 
-                <i></i>
+/* =========================================
+   KEYBOARD HINT
+========================================= */
 
-                <span>
-                    HTML • CSS • JavaScript
-                </span>
+.control-hint {
+    display: flex;
+    align-items: center;
 
-                <i></i>
+    gap: 7px;
 
-                <span>
-                    v2.0
-                </span>
+    margin-bottom: 18px;
+}
 
-            </footer>
+.control-hint span {
+    padding: 6px 9px;
 
-        </section>
+    border: 1px solid
+        rgba(255, 255, 255, 0.08);
 
-    </main>
+    border-radius: 7px;
 
+    color: #e2e8f0;
 
-    <!-- JavaScript -->
+    background:
+        rgba(255, 255, 255, 0.06);
 
-    <script src="diano.js"></script>
+    font-size: 8px;
 
-</body>
+    font-weight: 800;
+}
 
-</html>
+
+/* =========================================
+   PRIMARY BUTTON
+========================================= */
+
+.primary-btn {
+    min-width: 160px;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    padding: 13px 23px;
+
+    border: none;
+
+    border-radius: 13px;
+
+    color: white;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--pink),
+            var(--purple)
+        );
+
+    font-family: inherit;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 10px 30px
+        rgba(236, 72, 153, 0.25);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        filter 0.2s ease;
+
+    touch-action: manipulation;
+}
+
+.primary-btn:hover {
+    transform: translateY(-2px);
+
+    filter: brightness(1.08);
+
+    box-shadow:
+        0 15px 38px
+        rgba(236, 72, 153, 0.35);
+}
+
+.primary-btn:active {
+    transform: scale(0.97);
+}
+
+
+/* =========================================
+   FINAL SCORE
+========================================= */
+
+.final-score {
+    margin-bottom: 13px;
+
+    color: #fbbf24;
+
+    font-size: 38px;
+
+    font-weight: 800;
+
+    font-variant-numeric: tabular-nums;
+
+    text-shadow:
+        0 5px 20px
+        rgba(251, 191, 36, 0.25);
+}
+
+.result-row {
+    margin-bottom: 17px;
+
+    padding: 8px 19px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 10px;
+
+    background:
+        rgba(255, 255, 255, 0.045);
+}
+
+.result-row span {
+    margin-right: 8px;
+
+    color: var(--muted);
+
+    font-size: 8px;
+
+    font-weight: 700;
+
+    letter-spacing: 1px;
+}
+
+.result-row strong {
+    color: #fbbf24;
+
+    font-size: 13px;
+}
+
+
+/* =========================================
+   GAME CONTROLS
+========================================= */
+
+.game-controls {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 12px;
+
+    margin-top: 17px;
+}
+
+.action-btn {
+    min-height: 52px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 9px;
+
+    border: none;
+
+    border-radius: 14px;
+
+    color: white;
+
+    font-family: inherit;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        filter 0.2s ease,
+        box-shadow 0.2s ease;
+
+    touch-action: manipulation;
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+
+    filter: brightness(1.08);
+}
+
+.action-btn:active {
+    transform: scale(0.97);
+}
+
+.action-icon {
+    font-size: 18px;
+}
+
+.jump-btn {
+    background:
+        linear-gradient(
+            135deg,
+            #10b981,
+            #06b6d4
+        );
+
+    box-shadow:
+        0 10px 25px
+        rgba(16, 185, 129, 0.18);
+}
+
+.pause-btn {
+    background:
+        linear-gradient(
+            135deg,
+            #f59e0b,
+            #ef4444
+        );
+
+    box-shadow:
+        0 10px 25px
+        rgba(245, 158, 11, 0.18);
+}
+
+
+/* =========================================
+   INFO CARDS
+========================================= */
+
+.info-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 10px;
+
+    margin-top: 14px;
+}
+
+.info-card {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 12px;
+
+    border: 1px solid
+        rgba(255, 255, 255, 0.06);
+
+    border-radius: 13px;
+
+    background:
+        rgba(255, 255, 255, 0.025);
+
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.info-card:hover {
+    transform: translateY(-2px);
+
+    border-color:
+        rgba(139, 92, 246, 0.25);
+}
+
+.info-icon {
+    width: 35px;
+    height: 35px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 10px;
+
+    background:
+        rgba(139, 92, 246, 0.1);
+
+    font-size: 15px;
+}
+
+.info-card strong {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: #e2e8f0;
+
+    font-size: 9px;
+}
+
+.info-card span {
+    display: block;
+
+    color: #64748b;
+
+    font-size: 8px;
+
+    line-height: 1.4;
+}
+
+
+/* =========================================
+   FOOTER
+========================================= */
+
+.game-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    margin-top: 16px;
+
+    color: #475569;
+
+    font-size: 8px;
+
+    font-weight: 600;
+
+    letter-spacing: 0.5px;
+}
+
+.game-footer i {
+    width: 3px;
+    height: 3px;
+
+    border-radius: 50%;
+
+    background: #475569;
+}
+
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 800px) {
+
+    body {
+        padding: 15px;
+    }
+
+    .game-header {
+        flex-direction: column;
+
+        align-items: stretch;
+    }
+
+    .brand {
+        justify-content: center;
+    }
+
+    .stats {
+        justify-content: center;
+    }
+
+    .stat {
+        flex: 1;
+
+        max-width: 160px;
+    }
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 600px) {
+
+    body {
+        padding: 8px;
+    }
+
+    .game-card {
+        padding: 12px;
+
+        border-radius: 21px;
+    }
+
+    .game-header {
+        gap: 11px;
+
+        margin-bottom: 13px;
+    }
+
+    .brand-mark {
+        width: 44px;
+        height: 44px;
+
+        border-radius: 13px;
+
+        font-size: 21px;
+    }
+
+    .brand-copy h1 {
+        font-size: 21px;
+    }
+
+    .brand-copy p {
+        font-size: 7px;
+
+        letter-spacing: 1.5px;
+    }
+
+    .stats {
+        width: 100%;
+    }
+
+    .stat {
+        max-width: none;
+
+        padding: 7px 10px;
+
+        border-radius: 11px;
+    }
+
+    .stat span {
+        font-size: 7px;
+    }
+
+    .stat strong {
+        font-size: 16px;
+    }
+
+    .game-frame {
+        border-radius: 15px;
+    }
+
+    canvas {
+        border-width: 2px;
+
+        border-radius: 15px;
+    }
+
+    .game-overlay {
+        inset: 2px;
+
+        padding: 12px;
+    }
+
+    .hero-icon {
+        width: 45px;
+        height: 45px;
+
+        margin-bottom: 7px;
+
+        border-radius: 13px;
+
+        font-size: 21px;
+    }
+
+    .eyebrow {
+        margin-bottom: 5px;
+
+        font-size: 7px;
+
+        letter-spacing: 1.5px;
+    }
+
+    .overlay-content h2 {
+        margin-bottom: 5px;
+
+        font-size: 20px;
+    }
+
+    .overlay-content p {
+        max-width: 285px;
+
+        margin-bottom: 8px;
+
+        font-size: 9px;
+
+        line-height: 1.4;
+    }
+
+    .control-hint {
+        gap: 5px;
+
+        margin-bottom: 9px;
+    }
+
+    .control-hint span {
+        padding: 3px 6px;
+
+        font-size: 6px;
+
+        border-radius: 5px;
+    }
+
+    .primary-btn {
+        min-width: 125px;
+
+        padding: 9px 14px;
+
+        border-radius: 10px;
+
+        font-size: 10px;
+    }
+
+    .final-score {
+        margin-bottom: 5px;
+
+        font-size: 27px;
+    }
+
+    .result-row {
+        margin-bottom: 8px;
+
+        padding: 5px 11px;
+    }
+
+    .result-row span {
+        font-size: 7px;
+    }
+
+    .result-row strong {
+        font-size: 10px;
+    }
+
+    .game-controls {
+        gap: 8px;
+
+        margin-top: 10px;
+    }
+
+    .action-btn {
+        min-height: 44px;
+
+        border-radius: 10px;
+
+        font-size: 10px;
+    }
+
+    .action-icon {
+        font-size: 14px;
+    }
+
+    .info-grid {
+        gap: 6px;
+
+        margin-top: 9px;
+    }
+
+    .info-card {
+        justify-content: center;
+
+        padding: 7px;
+
+        border-radius: 9px;
+    }
+
+    .info-icon {
+        width: 29px;
+        height: 29px;
+
+        border-radius: 8px;
+
+        font-size: 12px;
+    }
+
+    .info-card strong {
+        font-size: 8px;
+    }
+
+    .info-card span {
+        display: none;
+    }
+
+    .game-footer {
+        margin-top: 10px;
+
+        font-size: 6px;
+
+        gap: 5px;
+    }
+}
+
+
+/* =========================================
+   SMALL PHONES
+========================================= */
+
+@media (max-width: 380px) {
+
+    body {
+        padding: 5px;
+    }
+
+    .game-card {
+        padding: 9px;
+
+        border-radius: 18px;
+    }
+
+    .brand-mark {
+        width: 38px;
+        height: 38px;
+
+        font-size: 18px;
+
+        border-radius: 11px;
+    }
+
+    .brand-copy h1 {
+        font-size: 18px;
+    }
+
+    .brand-copy p {
+        font-size: 6px;
+    }
+
+    .stat {
+        padding: 6px 8px;
+    }
+
+    .stat span {
+        font-size: 6px;
+    }
+
+    .stat strong {
+        font-size: 14px;
+    }
+
+    .game-frame,
+    canvas {
+        border-radius: 12px;
+    }
+
+    .overlay-content h2 {
+        font-size: 17px;
+    }
+
+    .overlay-content p {
+        font-size: 8px;
+
+        max-width: 240px;
+    }
+
+    .hero-icon {
+        width: 36px;
+        height: 36px;
+
+        font-size: 17px;
+
+        border-radius: 10px;
+    }
+
+    .control-hint {
+        margin-bottom: 6px;
+    }
+
+    .primary-btn {
+        min-width: 108px;
+
+        padding: 8px 11px;
+
+        font-size: 9px;
+    }
+
+    .action-btn {
+        min-height: 40px;
+
+        font-size: 9px;
+    }
+
+    .info-grid {
+        grid-template-columns:
+            repeat(3, 1fr);
+    }
+
+    .info-card {
+        padding: 5px;
+    }
+
+    .info-icon {
+        width: 25px;
+        height: 25px;
+
+        font-size: 10px;
+    }
+}
+
+
+/* =========================================
+   LANDSCAPE MOBILE
+========================================= */
+
+@media (
+    max-height: 500px
+) and (
+    orientation: landscape
+) {
+
+    body {
+        align-items: flex-start;
+
+        padding: 7px;
+    }
+
+    .game-card {
+        padding: 10px;
+    }
+
+    .game-header {
+        flex-direction: row;
+
+        margin-bottom: 8px;
+    }
+
+    .brand {
+        justify-content: flex-start;
+    }
+
+    .stats {
+        width: auto;
+    }
+
+    .stat {
+        min-width: 75px;
+    }
+
+    .game-frame {
+        max-height: 58vh;
+    }
+
+    canvas {
+        max-height: 58vh;
+    }
+
+    .game-controls {
+        margin-top: 7px;
+    }
+
+    .info-grid,
+    .game-footer {
+        display: none;
+    }
+}
+
+
+/* =========================================
+   ACCESSIBILITY
+========================================= */
+
+button:focus-visible {
+    outline: 2px solid #a78bfa;
+
+    outline-offset: 3px;
+}
+
+
+/* =========================================
+   REDUCED MOTION
+========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+
+        animation-iteration-count: 1 !important;
+
+        scroll-behavior: auto !important;
+
+        transition-duration: 0.01ms !important;
+    }
+}
